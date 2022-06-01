@@ -16,8 +16,8 @@ Vue.createApp({
         }
     },
     mounted(){
-        this.snapFX = new Audio('fx/hover.wav');
-        this.windFX = new Audio('fx/wind.wav');
+        this.snapFX = new Audio('src/fx/hover.wav');
+        this.windFX = new Audio('src/fx/wind.wav');
         this.snapFX.volume = .2;
         setTimeout(()=>{
             this.setActive('home-profile')
@@ -94,7 +94,7 @@ Vue.createApp({
             
         },
         playWind(){
-            this.windFX = new Audio('fx/wind.wav');
+            this.windFX = new Audio('src/fx/wind.wav');
             this.windFX.play()
         },
         stopWind(){
@@ -122,7 +122,7 @@ Vue.createApp({
                 
                 //create a sphere
                 const sphere = new THREE.Mesh(new THREE.SphereGeometry(3,50,50),new THREE.MeshBasicMaterial({
-                    map: new THREE.TextureLoader().load('/imgs/wrapskills.png'),
+                    map: new THREE.TextureLoader().load('src/imgs/wrapskills.png'),
                     transparent:true,
                     side: THREE.DoubleSide
                 }))
