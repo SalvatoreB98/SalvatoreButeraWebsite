@@ -122,7 +122,7 @@ Vue.createApp({
                 
                 //create a sphere
                 const sphere = new THREE.Mesh(new THREE.SphereGeometry(3,50,50),new THREE.MeshBasicMaterial({
-                    map: new THREE.TextureLoader().load('src/imgs/wrapskills.png'),
+                    map: new THREE.TextureLoader().load('/imgs/wrapskills.png'),
                     transparent:true,
                     side: THREE.DoubleSide
                 }))
