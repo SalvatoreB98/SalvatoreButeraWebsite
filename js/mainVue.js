@@ -1,5 +1,7 @@
 import * as animations from './animations';
 import * as THREE from 'three'
+import GSAP from 'gsap';
+import { lerp } from 'three/src/math/mathutils';
 Vue.createApp({
     el: '#app',
     data() {
@@ -130,34 +132,33 @@ Vue.createApp({
                 camera.position.z = 5
                 let move = false;
                 sphere.rotation.y = 0.4
-                function animate() {
-                    requestAnimationFrame(animate)
-                    renderer.render(scene,camera)
-                }
-                animate();   
+                  
                 let mousedown;
                 let mouseSpeed = {
                     x:0,
                     y:0
                 } ;
-                window.addEventListener('wheel',(e)=>{
-                    this.touchOrMouseMove(sphere,e.wheelDelta * 1.308);
-                    this.selectedSkill = this.getSkill(sphere.rotation.y)
-                })
+                let interpolate = true;
+                let isWheel = false
+                var prevEvent, currentEvent;
+                var  movementX = 0;
+                document.documentElement.onmousemove=function(event){
+                currentEvent=event;
+                }
+                setInterval(function(){
+                    if(prevEvent && currentEvent){
+                        movementX= currentEvent.screenX-prevEvent.screenX;
+                    }
+                    prevEvent=currentEvent;
+                }, 10)
                 document.addEventListener('mousemove',(e)=>{
+                    currentEvent = e;
                     mouseSpeed = {
-                        x: e.movementX,
+                        x: movementX/100,
                         y: e.movementY
                     } ;
-                    let x = (e.clientX / innerWidth) * 2 - 1;
-                    if(this.prevX == -1) {
-                        this.prevX = e.pageX;    
-                        return false;
-                    }
-                   this.movement = mouseSpeed.x;
                    if(mousedown == true){
-                    this.touchOrMouseMove(sphere, this.movement);
-                    this.selectedSkill = this.getSkill(sphere.rotation.y);
+                        this.selectedSkill = this.getSkill(sphere.rotation.y);
                     }     
                 })  
                 document.addEventListener('mousedown',(e)=>{
@@ -165,14 +166,43 @@ Vue.createApp({
                     sphereCanvas.style.cursor = 'grabbing';
                     sphereCanvas.style.opacity = 1
                     this.grabInfo = false
+                    lerp.current = lerp.target
                 })     
                 document.addEventListener('mouseup',(e)=>{
-                    sphereCanvas.style.cursor = 'grab'
+                    sphereCanvas.style.cursor = 'grab' 
                     mousedown = false;
-                })      
-        },
-        touchOrMouseMove(sphere, movement) {
-            sphere.rotation.y = sphere.rotation.y + movement * 0.005
+                    console.log('speed: ', mouseSpeed.x)
+                    console.log('current: ', lerp.current)
+                    console.log('target: ', lerp.target)
+                    if(mouseSpeed !=0){
+                        lerp.target = sphere.rotation.y + mouseSpeed.x  
+                    }            
+                });
+                var lerp = {
+                    current:0,
+                    target: 0,
+                    ease: 0.1
+                }
+                function animate() {
+                    // console.log('speed: ', mouseSpeed.x)
+                    // console.log('current: ', lerp.current)
+                    // console.log('target: ', lerp.target)
+                    if(mousedown == false && isWheel == false){
+                        sphere.rotation.y = lerp.current;   
+                        lerp.current = GSAP.utils.interpolate(
+                            lerp.current,
+                            lerp.target,
+                            lerp.ease
+                        )                 
+                    }
+                    if(mousedown == true){
+                        sphere.rotation.y = sphere.rotation.y + mouseSpeed.x*0.25 
+                        lerp.current = sphere.rotation.y;
+                    }
+                    requestAnimationFrame(animate)
+                    renderer.render(scene,camera)
+                }
+                animate(); 
         },
         getSkill(sphereRotation){
             let toReturn = 'javascript'
