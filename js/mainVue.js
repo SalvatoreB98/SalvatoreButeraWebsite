@@ -156,10 +156,7 @@ Vue.createApp({
                     mouseSpeed = {
                         x: movementX/100,
                         y: e.movementY
-                    } ;
-                   if(mousedown == true){
-                        this.selectedSkill = this.getSkill(sphere.rotation.y);
-                    }     
+                    } ;   
                 })  
                 document.addEventListener('mousedown',(e)=>{
                     mousedown = true;
@@ -175,7 +172,7 @@ Vue.createApp({
                     console.log('current: ', lerp.current)
                     console.log('target: ', lerp.target)
                     if(mouseSpeed !=0){
-                        lerp.target = sphere.rotation.y + mouseSpeed.x  
+                        lerp.target = sphere.rotation.y + mouseSpeed.x *5 
                     }            
                 });
                 var lerp = {
@@ -183,6 +180,7 @@ Vue.createApp({
                     target: 0,
                     ease: 0.1
                 }
+                let that = this;
                 function animate() {
                     // console.log('speed: ', mouseSpeed.x)
                     // console.log('current: ', lerp.current)
@@ -196,9 +194,10 @@ Vue.createApp({
                         )                 
                     }
                     if(mousedown == true){
-                        sphere.rotation.y = sphere.rotation.y + mouseSpeed.x*0.25 
+                        sphere.rotation.y = sphere.rotation.y + mouseSpeed.x*0.5
                         lerp.current = sphere.rotation.y;
                     }
+                    that.selectedSkill =that.getSkill(sphere.rotation.y);
                     requestAnimationFrame(animate)
                     renderer.render(scene,camera)
                 }
