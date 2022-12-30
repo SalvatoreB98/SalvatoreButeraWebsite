@@ -1,7 +1,6 @@
 import * as animations from './animations';
 import * as THREE from 'three'
 import GSAP from 'gsap';
-import { lerp } from 'three/src/math/mathutils';
 Vue.createApp({
     el: '#app',
     data() {
